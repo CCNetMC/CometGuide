@@ -13,3 +13,5 @@ There are three commands:
 3. `/askwiki <query>`
 
 Updating the wiki involves updating the `wiki` subdirectory with a fresh wiki dump and running `$update_embeddings`.
+
+`requirements.txt` is updated using `pipreqs`.
