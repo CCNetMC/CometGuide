@@ -13,6 +13,7 @@ class UpdateEmbeddingsCommand(commands.Cog):
         self.bot = bot
 
     @commands.command()
+    @commands.guild_only()
     @commands.has_permissions(administrator=True)
     async def update_embeddings(self, ctx):
         await ctx.send("Beginning embeddings update process.")

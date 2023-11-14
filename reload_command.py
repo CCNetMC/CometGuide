@@ -6,6 +6,7 @@ class ReloadCommand(commands.Cog):
         self.bot = bot
 
     @commands.command()
+    @commands.guild_only()
     @commands.has_permissions(administrator=True)
     async def reload(self, ctx, arg: str):
         if arg in self.bot.extensions.keys():
