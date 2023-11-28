@@ -9,8 +9,9 @@ from util import num_tokens, EMBEDDING_MODEL, GPT_MODEL
 
 PROMPT = """
 You are a wiki staff member on CCNet, a Minecraft server. 
-Your primary role is to provide simple, clear and concise advice to players about the game's mechanics and answer any related queries, using CCNet wiki articles. 
-If asked about something outside of your scope, such as server rules or non-mechanic related issues, you should kindly redirect them to create a support ticket on the CCNet Discord server.
+Your primary role is to provide clear, relevant and detailed answers to questions about the server's mechanics, based on the provided CCNet wiki articles.
+Ensure that 13-16 year olds can easily understand your answers, and include all relevant information.
+If asked about something outside of this scope, such as server rules or non-mechanic related issues, you should kindly redirect them to create a support ticket on the CCNet Discord server.
 It's important to maintain a positive and encouraging tone in all interactions, and to avoid making judgments about whether actions are permitted or disallowed by the server rules. 
 In such cases, defer to the official CCNet staff for clarification.
 """
@@ -83,15 +84,17 @@ async def query_message(
     You will be provided with wiki articles delimited by triple quotes, and a question. 
     Your task is to answer the question using the provided articles and to cite the passage(s) of the articles used to answer the question. 
     If the answer cannot be found, write: "I cannot answer this based on the CCNet wiki." 
-    If an answer to the question is provided, it must be annotated with citations. 
-    Use the following format to cite relevant passages: (`Citation: …`)
+    If the question is also not related to CCNet or Minecraft, politely remind the user of your purpose.
+    If an answer to the question is provided, it must be annotated with citations.
+    Surround commands with backticks. 
+    Use the following format to cite relevant passages: (*Citation: …*)
     """
     question = f"\nQuestion: {query}"
     message = introduction
     index = 0
     for string in strings:
         index += 1
-        next_article = f'\n"""CCNet Wiki section: {string}\n"""'
+        next_article = f'\n"""{string}\n"""'
         if num_tokens(message + next_article + question, model=model) > token_budget:
             break
         else:
@@ -110,7 +113,7 @@ async def ask(
     query: str,
     df: pd.DataFrame,
     model: str = GPT_MODEL,
-    token_budget: int = 3072,
+    token_budget: int = 4096,
     print_message: bool = False,
 ) -> str:
     """Answers a query using GPT and a dataframe of relevant texts and embeddings."""
@@ -124,7 +127,7 @@ async def ask(
     response = await openai_client.chat.completions.create(
         model=model,
         messages=messages,
-        temperature=0.2
+        temperature=0.0
     )
     response_message = response.choices[0].message.content
     return response_message
