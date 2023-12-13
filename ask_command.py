@@ -38,7 +38,7 @@ class AskCommand(commands.Cog):
             return await interaction.followup.send(f"Sorry, there was an error: {e}")
 
         em = discord.Embed(title=f"Question: {question}", description=response, colour=0xebab34)
-        em.set_footer(text="CometGuide may make mistakes. Always check the wiki if unsure.")
+        em.set_footer(text="CometGuide may make mistakes, and must not be consulted about server rules. Always check the wiki if unsure.")
         await interaction.followup.send(embed=em)
 
     @ask_command.error
@@ -83,6 +83,7 @@ async def query_message(
     introduction = """
     You will be provided with wiki articles delimited by triple quotes, and a question. 
     Your task is to answer the question using the provided articles and to cite the passage(s) of the articles used to answer the question. 
+    If the question asks whether an action is allowed, write: "I cannot answer questions about the CCNet rules."
     If the answer cannot be found, write: "I cannot answer this based on the CCNet wiki." 
     If the question is also not related to CCNet or Minecraft, politely remind the user of your purpose.
     If an answer to the question is provided, it must be annotated with citations.
