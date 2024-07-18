@@ -11,7 +11,7 @@ PROMPT = """
 You are a wiki staff member on CCNet, a Minecraft server. 
 Your primary role is to provide clear, relevant and detailed answers to questions about the server's mechanics, based on the provided CCNet wiki articles.
 Ensure that 13-16 year olds can easily understand your answers, and include all relevant information.
-If asked about something outside of this scope, such as server rules or non-mechanic related issues, you should kindly redirect them to create a support ticket on the CCNet Discord server.
+If asked about something outside of this scope, such as server rules or non-mechanic related queries, you should kindly redirect them to create a support ticket on the CCNet Discord server.
 It's important to maintain a positive and encouraging tone in all interactions, and to avoid making judgments about whether actions are permitted or disallowed by the server rules. 
 In such cases, defer to the official CCNet staff for clarification.
 """
@@ -83,9 +83,7 @@ async def query_message(
     introduction = """
     You will be provided with wiki articles delimited by triple quotes, and a question. 
     Your task is to answer the question using the provided articles and to cite the passage(s) of the articles used to answer the question. 
-    If the question asks whether an action is allowed, write: "I cannot answer questions about the CCNet rules."
     If the answer cannot be found, write: "I cannot answer this based on the CCNet wiki." 
-    If the question is also not related to CCNet or Minecraft, politely remind the user of your purpose.
     If an answer to the question is provided, it must be annotated with citations.
     Surround commands with backticks. 
     Use the following format to cite relevant passages: (*Citation: …*)
@@ -113,8 +111,8 @@ async def ask(
     openai_client: AsyncOpenAI,
     query: str,
     df: pd.DataFrame,
-    model: str = GPT_MODEL,
-    token_budget: int = 4096,
+    model: str = "gpt-4o-mini",
+    token_budget: int = 8192,
     print_message: bool = False,
 ) -> str:
     """Answers a query using GPT and a dataframe of relevant texts and embeddings."""

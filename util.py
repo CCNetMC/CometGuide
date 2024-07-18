@@ -1,9 +1,9 @@
 import tiktoken
 
-EMBEDDING_MODEL = "text-embedding-ada-002"
+EMBEDDING_MODEL = "text-embedding-3-small"
 SAVE_PATH = "wiki_embeddings.csv"
 # See https://platform.openai.com/docs/models
-GPT_MODEL = "gpt-3.5-turbo-1106"
+GPT_MODEL = "gpt-4o"
 
 
 def num_tokens(text: str, model: str = GPT_MODEL) -> int:
