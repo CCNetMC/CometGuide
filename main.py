@@ -14,11 +14,15 @@ openai_api_key_file = open("openai_api_key.txt", "r")
 openai_api_key = openai_api_key_file.read()
 openai_api_key_file.close()
 
+deepseek_api_key_file = open("deepseek_api_key.txt", "r")
+deepseek_api_key = deepseek_api_key_file.read()
+deepseek_api_key_file.close()
 
 class CCNetGuideBot(commands.Bot):
     def __init__(self) -> None:
         super().__init__(command_prefix='$', description="Queries the CCNet wiki.", case_insensitive=True, intents=intents)
         self.openai_client = AsyncOpenAI(api_key=openai_api_key)
+        self.deepseek_client = AsyncOpenAI(api_key=deepseek_api_key, base_url="https://api.deepseek.com")
         self.wiki_embeddings = pd.read_csv("wiki_embeddings.csv")
 
     async def on_ready(self):

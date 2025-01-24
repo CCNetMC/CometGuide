@@ -33,7 +33,7 @@ class AskCommand(commands.Cog):
             await interaction.followup.send("Sorry, your question was flagged as being inappropriate by OpenAI.")
             return
         try:
-            response = await ask(self.bot.openai_client, question, self.bot.wiki_embeddings)
+            response = await ask(self.bot.openai_client, self.bot.deepseek_client, question, self.bot.wiki_embeddings, model=GPT_MODEL)
         except Exception as e:
             return await interaction.followup.send(f"Sorry, there was an error: {e}")
 
@@ -75,7 +75,6 @@ async def query_message(
         openai_client: AsyncOpenAI,
         query: str,
         df: pd.DataFrame,
-        model: str,
         token_budget: int
 ) -> str:
     """Return a message for GPT, with relevant source texts pulled from a dataframe."""
@@ -94,7 +93,7 @@ async def query_message(
     for string in strings:
         index += 1
         next_article = f'\n"""{string}\n"""'
-        if num_tokens(message + next_article + question, model=model) > token_budget:
+        if num_tokens(message + next_article + question) > token_budget:
             break
         else:
             message += next_article
@@ -109,6 +108,7 @@ async def is_flagged(openai_client: AsyncOpenAI, query: str) -> bool:
 
 async def ask(
     openai_client: AsyncOpenAI,
+    deepseek_client: AsyncOpenAI,
     query: str,
     df: pd.DataFrame,
     model: str = "gpt-4o-mini",
@@ -116,14 +116,14 @@ async def ask(
     print_message: bool = False,
 ) -> str:
     """Answers a query using GPT and a dataframe of relevant texts and embeddings."""
-    message = await query_message(openai_client, query, df, model=model, token_budget=token_budget)
+    message = await query_message(openai_client, query, df, token_budget=token_budget)
     if print_message:
         print(message)
     messages = [
         {"role": "system", "content": PROMPT},
         {"role": "user", "content": message},
     ]
-    response = await openai_client.chat.completions.create(
+    response = await deepseek_client.chat.completions.create(
         model=model,
         messages=messages,
         temperature=0.0
